@@ -27,8 +27,10 @@ public:
                         const uint32_t);
 
     void addFeature(const GeometryTileFeature&,
-                            const GeometryCollection&,
-                            const mbgl::ImagePositions&) override;
+                    const GeometryCollection&,
+                    const mbgl::ImagePositions&,
+                    const PatternLayerMap&) override;
+
     bool hasData() const override;
 
     void upload(gl::Context&) override;

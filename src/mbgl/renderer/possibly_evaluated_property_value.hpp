@@ -107,7 +107,7 @@ public:
         return this->match(
             [&] (const Faded<T>& constant_) { return constant_; },
             [&] (const style::PropertyExpression<T>& expression) {
-                if (expression.isZoomDependent()) {
+                if (!expression.isZoomConstant()) {
                     const T min = expression.evaluate(floor(zoom), feature, defaultValue);
                     const T max = expression.evaluate(floor(zoom) + 1, feature, defaultValue);
                     return Faded<T> {min, max,  0.0f, 0.0f, 0.0f};

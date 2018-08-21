@@ -11,6 +11,7 @@
 #include <mbgl/util/variant.hpp>
 #include <mbgl/renderer/image_atlas.hpp>
 #include <mbgl/util/indexed_tuple.hpp>
+#include <mbgl/layout/pattern_layout.hpp>
 
 #include <bitset>
 
@@ -83,7 +84,7 @@ public:
 
     virtual ~PaintPropertyBinder() = default;
 
-    virtual void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&) = 0;
+    virtual void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&, const PatternDependency& = {}) = 0;
     virtual void upload(gl::Context& context) = 0;
     virtual void setPatternParameters(const optional<ImagePosition>&, const optional<ImagePosition>&, CrossfadeParameters&) = 0;
     virtual std::tuple<ExpandToType<As, optional<gl::AttributeBinding>>...> attributeBinding(const PossiblyEvaluatedType& currentValue) const = 0;
@@ -102,7 +103,7 @@ public:
         : constant(std::move(constant_)) {
     }
 
-    void populateVertexVector(const GeometryTileFeature&, std::size_t, const ImagePositions&) override {}
+    void populateVertexVector(const GeometryTileFeature&, std::size_t, const ImagePositions&, const PatternDependency&) override {}
     void upload(gl::Context&) override {}
     void setPatternParameters(const optional<ImagePosition>&, const optional<ImagePosition>&, CrossfadeParameters&) override {};
 
@@ -129,7 +130,7 @@ public:
         : constant(std::move(constant_)), constantPatternPositions({}) {
     }
 
-    void populateVertexVector(const GeometryTileFeature&, std::size_t, const ImagePositions&) override {}
+    void populateVertexVector(const GeometryTileFeature&, std::size_t, const ImagePositions&, const PatternDependency&) override {}
     void upload(gl::Context&) override {}
 
     void setPatternParameters(const optional<ImagePosition>& posA, const optional<ImagePosition>& posB, CrossfadeParameters&) override {
@@ -171,7 +172,7 @@ public:
           defaultValue(std::move(defaultValue_)) {
     }
     void setPatternParameters(const optional<ImagePosition>&, const optional<ImagePosition>&, CrossfadeParameters&) override {};
-    void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&) override {
+    void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&, const PatternDependency&) override {
         auto evaluated = expression.evaluate(feature, defaultValue);
         this->statistics.add(evaluated);
         auto value = attributeValue(evaluated);
@@ -226,7 +227,7 @@ public:
           zoomRange({zoom, zoom + 1}) {
     }
     void setPatternParameters(const optional<ImagePosition>&, const optional<ImagePosition>&, CrossfadeParameters&) override {};
-    void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&) override {
+    void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&, const PatternDependency&) override {
         Range<T> range = expression.evaluate(zoomRange, feature, defaultValue);
         this->statistics.add(range.min);
         this->statistics.add(range.max);
@@ -278,7 +279,6 @@ private:
 template <class T, class A1, class A2>
 class CompositeCrossFadedPaintPropertyBinder : public PaintPropertyBinder<T, std::array<uint16_t, 4>, PossiblyEvaluatedPropertyValue<Faded<T>>, A1, A2> {
 public:
-    // to fix -- we will want to use both attributes
     using AttributeType = ZoomInterpolatedAttributeType<A1>;
     using AttributeType2 = ZoomInterpolatedAttributeType<A2>;
 
@@ -301,19 +301,12 @@ public:
         crossfade = crossfade_;
     };
 
-    void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions& patternPositions) override {
-        std::array<T, 3> range;
-        if (expression.isZoomConstant())  {
-            const T evaluatedValue = expression.evaluate(feature, defaultValue);
-            range = {{evaluatedValue, evaluatedValue, evaluatedValue}};
-        } else {
-            range = {{expression.evaluate(zoomRange.min, feature, defaultValue), expression.evaluate(zoomRange.min, feature, defaultValue), expression.evaluate(zoomRange.min, feature, defaultValue)}};
-        }
+    void populateVertexVector(const GeometryTileFeature&, std::size_t length, const ImagePositions& patternPositions, const PatternDependency& patternDependencies) override {
 
         if (!patternPositions.empty()) {
-            const auto min = patternPositions.find(range[0]);
-            const auto mid = patternPositions.find(range[1]);
-            const auto max = patternPositions.find(range[2]);
+            const auto min = patternPositions.find(patternDependencies.min);
+            const auto mid = patternPositions.find(patternDependencies.mid);
+            const auto max = patternPositions.find(patternDependencies.max);
 
             const auto end = patternPositions.end();
             if (min == end || mid == end || max == end) return;
@@ -460,9 +453,9 @@ public:
     PaintPropertyBinders(PaintPropertyBinders&&) = default;
     PaintPropertyBinders(const PaintPropertyBinders&) = delete;
 
-    void populateVertexVectors(const GeometryTileFeature& feature, std::size_t length, const ImagePositions& patternPositions) {
+    void populateVertexVectors(const GeometryTileFeature& feature, std::size_t length, const ImagePositions& patternPositions, const PatternDependency& patternDependencies = {}) {
         util::ignore({
-            (binders.template get<Ps>()->populateVertexVector(feature, length, patternPositions), 0)...
+            (binders.template get<Ps>()->populateVertexVector(feature, length, patternPositions, patternDependencies), 0)...
         });
     }
 

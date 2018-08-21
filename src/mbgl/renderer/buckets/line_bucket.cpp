@@ -32,13 +32,19 @@ LineBucket::LineBucket(const style::LineLayoutProperties::PossiblyEvaluated layo
 
 void LineBucket::addFeature(const GeometryTileFeature& feature,
                             const GeometryCollection& geometryCollection,
-                            const mbgl::ImagePositions& patternPositions) {
+                            const ImagePositions& patternPositions,
+                            const PatternLayerMap& patternDependencies) {
     for (auto& line : geometryCollection) {
         addGeometry(line, feature);
     }
 
     for (auto& pair : paintPropertyBinders) {
-        pair.second.populateVertexVectors(feature, vertices.vertexSize(), patternPositions);
+        const auto it = patternDependencies.find(pair.first);
+        if (it != patternDependencies.end()){
+            pair.second.populateVertexVectors(feature, vertices.vertexSize(), patternPositions, it->second);
+        } else {
+            pair.second.populateVertexVectors(feature, vertices.vertexSize(), patternPositions, {});
+        }
     }
 }
 

@@ -14,6 +14,8 @@ class Context;
 } // namespace gl
 
 class RenderLayer;
+class PatternDependency;
+using PatternLayerMap = std::unordered_map<std::string, PatternDependency>;
 
 class Bucket : private util::noncopyable {
 public:
@@ -43,7 +45,8 @@ public:
     // pass-by-const-ref the geometries as a second parameter.
     virtual void addFeature(const GeometryTileFeature&,
                             const GeometryCollection&,
-                            const mbgl::ImagePositions&) {};
+                            const ImagePositions&,
+                            const PatternLayerMap&) {};
 
     virtual void populateFeatureBuffers(const ImagePositions&) {};
     virtual void addPatternDependencies(const std::vector<const RenderLayer*>&, ImageDependencies&) {};

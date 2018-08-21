@@ -45,7 +45,8 @@ FillBucket::FillBucket(const FillBucket::PossiblyEvaluatedLayoutProperties,
 
 void FillBucket::addFeature(const GeometryTileFeature& feature,
                             const GeometryCollection& geometry,
-                            const ImagePositions& patternPositions) {
+                            const ImagePositions& patternPositions,
+                            const PatternLayerMap& patternDependencies) {
     for (auto& polygon : classifyRings(geometry)) {
         // Optimize polygons with many interior rings for earcut tesselation.
         limitHoles(polygon, 500);
@@ -110,7 +111,12 @@ void FillBucket::addFeature(const GeometryTileFeature& feature,
     }
 
     for (auto& pair : paintPropertyBinders) {
-        pair.second.populateVertexVectors(feature, vertices.vertexSize(), patternPositions);
+        const auto it = patternDependencies.find(pair.first);
+        if (it != patternDependencies.end()){
+            pair.second.populateVertexVectors(feature, vertices.vertexSize(), patternPositions, it->second);
+        } else {
+            pair.second.populateVertexVectors(feature, vertices.vertexSize(), patternPositions, {});
+        }
     }
 }
 

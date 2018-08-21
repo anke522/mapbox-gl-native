@@ -63,6 +63,9 @@ private:
     bool hasPendingSymbolDependencies() const;
     bool hasPendingParseResult() const;
 
+    template <typename B>
+    void checkPatternLayout(std::unique_ptr<PatternLayout<B>> layout);
+
     ActorRef<GeometryTileWorker> self;
     ActorRef<GeometryTile> parent;
 

@@ -39,8 +39,9 @@ bool CircleBucket::hasData() const {
 }
 
 void CircleBucket::addFeature(const GeometryTileFeature& feature,
-                                     const GeometryCollection& geometry,
-                                     const ImagePositions&) {
+                                 const GeometryCollection& geometry,
+                                 const ImagePositions&,
+                                 const PatternLayerMap&) {
     constexpr const uint16_t vertexLength = 4;
 
     for (auto& circle : geometry) {
