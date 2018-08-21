@@ -7,8 +7,8 @@ namespace mbgl {
 namespace shaders {
 
 const char* hillshade::name = "hillshade";
-const char* hillshade::vertexSource = source() + 39388;
-const char* hillshade::fragmentSource = source() + 39587;
+const char* hillshade::vertexSource = source() + 39310;
+const char* hillshade::fragmentSource = source() + 39509;
 
 } // namespace shaders
 } // namespace mbgl
