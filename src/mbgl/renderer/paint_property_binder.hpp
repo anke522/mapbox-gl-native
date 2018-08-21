@@ -84,7 +84,7 @@ public:
 
     virtual ~PaintPropertyBinder() = default;
 
-    virtual void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&, const PatternDependency& = {}) = 0;
+    virtual void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&, const optional<PatternDependency>&) = 0;
     virtual void upload(gl::Context& context) = 0;
     virtual void setPatternParameters(const optional<ImagePosition>&, const optional<ImagePosition>&, CrossfadeParameters&) = 0;
     virtual std::tuple<ExpandToType<As, optional<gl::AttributeBinding>>...> attributeBinding(const PossiblyEvaluatedType& currentValue) const = 0;
@@ -103,7 +103,7 @@ public:
         : constant(std::move(constant_)) {
     }
 
-    void populateVertexVector(const GeometryTileFeature&, std::size_t, const ImagePositions&, const PatternDependency&) override {}
+    void populateVertexVector(const GeometryTileFeature&, std::size_t, const ImagePositions&, const optional<PatternDependency>&) override {}
     void upload(gl::Context&) override {}
     void setPatternParameters(const optional<ImagePosition>&, const optional<ImagePosition>&, CrossfadeParameters&) override {};
 
@@ -130,7 +130,7 @@ public:
         : constant(std::move(constant_)), constantPatternPositions({}) {
     }
 
-    void populateVertexVector(const GeometryTileFeature&, std::size_t, const ImagePositions&, const PatternDependency&) override {}
+    void populateVertexVector(const GeometryTileFeature&, std::size_t, const ImagePositions&, const optional<PatternDependency>&) override {}
     void upload(gl::Context&) override {}
 
     void setPatternParameters(const optional<ImagePosition>& posA, const optional<ImagePosition>& posB, CrossfadeParameters&) override {
@@ -172,7 +172,7 @@ public:
           defaultValue(std::move(defaultValue_)) {
     }
     void setPatternParameters(const optional<ImagePosition>&, const optional<ImagePosition>&, CrossfadeParameters&) override {};
-    void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&, const PatternDependency&) override {
+    void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&, const optional<PatternDependency>&) override {
         auto evaluated = expression.evaluate(feature, defaultValue);
         this->statistics.add(evaluated);
         auto value = attributeValue(evaluated);
@@ -227,7 +227,7 @@ public:
           zoomRange({zoom, zoom + 1}) {
     }
     void setPatternParameters(const optional<ImagePosition>&, const optional<ImagePosition>&, CrossfadeParameters&) override {};
-    void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&, const PatternDependency&) override {
+    void populateVertexVector(const GeometryTileFeature& feature, std::size_t length, const ImagePositions&, const optional<PatternDependency>&) override {
         Range<T> range = expression.evaluate(zoomRange, feature, defaultValue);
         this->statistics.add(range.min);
         this->statistics.add(range.max);
@@ -301,12 +301,12 @@ public:
         crossfade = crossfade_;
     };
 
-    void populateVertexVector(const GeometryTileFeature&, std::size_t length, const ImagePositions& patternPositions, const PatternDependency& patternDependencies) override {
-
+    void populateVertexVector(const GeometryTileFeature&, std::size_t length, const ImagePositions& patternPositions, const optional<PatternDependency>& patternDependencies) override {
+        if (!patternDependencies) return;
         if (!patternPositions.empty()) {
-            const auto min = patternPositions.find(patternDependencies.min);
-            const auto mid = patternPositions.find(patternDependencies.mid);
-            const auto max = patternPositions.find(patternDependencies.max);
+            const auto min = patternPositions.find(patternDependencies->min);
+            const auto mid = patternPositions.find(patternDependencies->mid);
+            const auto max = patternPositions.find(patternDependencies->max);
 
             const auto end = patternPositions.end();
             if (min == end || mid == end || max == end) return;
@@ -453,7 +453,7 @@ public:
     PaintPropertyBinders(PaintPropertyBinders&&) = default;
     PaintPropertyBinders(const PaintPropertyBinders&) = delete;
 
-    void populateVertexVectors(const GeometryTileFeature& feature, std::size_t length, const ImagePositions& patternPositions, const PatternDependency& patternDependencies = {}) {
+    void populateVertexVectors(const GeometryTileFeature& feature, std::size_t length, const ImagePositions& patternPositions, const optional<PatternDependency>& patternDependencies) {
         util::ignore({
             (binders.template get<Ps>()->populateVertexVector(feature, length, patternPositions, patternDependencies), 0)...
         });
