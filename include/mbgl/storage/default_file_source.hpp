@@ -109,9 +109,11 @@ public:
      * Only resources and tiles that belong to a region will be copied over. Identical
      * regions will be flattened into a single new region in the main database.
      *
-     * Note that the resulting new regions may not be in a completed status if the
-     * secondary database does not contain all the tiles or resources required by the
-     * region definition.
+     * Invokes the callback with a `MapboxOfflineTileCountExceededException` error if
+     * the merge operation would result in the offline tile count limit being exceeded.
+     *
+     * Merged regions may not be in a completed status if the secondary database
+     * does not contain all the tiles or resources required by the region definition.
      */
     void mergeOfflineRegions(const std::string& sideDatabasePath,
                             std::function<void (expected<OfflineRegions, std::exception_ptr>)>);
