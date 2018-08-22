@@ -35,6 +35,20 @@ public:
         return impl.getTile(tileID.z, tileID.x, tileID.y);
     }
 
+    mapbox::geometry::feature_collection<double> getChildren(const std::uint32_t cluster_id) {
+        return impl.getChildren(cluster_id);
+    }
+
+    mapbox::geometry::feature_collection<double> getLeaves(const std::uint32_t cluster_id,
+                                                           const std::uint32_t limit = 10,
+                                                           const std::uint32_t offset = 0) {
+        return impl.getLeaves(cluster_id, limit, offset);
+    }
+
+    std::uint8_t getClusterExpansionZoom(std::uint32_t cluster_id) {
+        return impl.getClusterExpansionZoom(cluster_id);
+    }
+
 private:
     mapbox::supercluster::Supercluster impl;
 };
