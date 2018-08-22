@@ -1,0 +1,95 @@
+# This file is generated. Do not edit. Regenerate this with scripts/generate-cmake-files.js
+
+# SDK/Foundation
+platform/darwin/src/MGLAccountManager.m
+platform/darwin/src/MGLAttributionInfo.mm
+platform/darwin/src/MGLFoundation.mm
+platform/darwin/src/MGLMapCamera.mm
+platform/darwin/src/MGLMapSnapshotter.mm
+platform/darwin/src/MGLNetworkConfiguration.m
+platform/darwin/src/MGLRendererConfiguration.mm
+platform/darwin/src/MGLStyle.mm
+platform/darwin/src/MGLTypes.m
+
+# SDK/Foundation/Categories
+platform/darwin/src/NSArray+MGLAdditions.mm
+platform/darwin/src/NSBundle+MGLAdditions.m
+platform/darwin/src/NSCoder+MGLAdditions.mm
+platform/darwin/src/NSComparisonPredicate+MGLAdditions.mm
+platform/darwin/src/NSCompoundPredicate+MGLAdditions.mm
+platform/darwin/src/NSDate+MGLAdditions.mm
+platform/darwin/src/NSDictionary+MGLAdditions.mm
+platform/darwin/src/NSExpression+MGLAdditions.mm
+platform/darwin/src/NSPredicate+MGLAdditions.mm
+platform/darwin/src/NSProcessInfo+MGLAdditions.m
+platform/darwin/src/NSString+MGLAdditions.m
+platform/darwin/src/NSURL+MGLAdditions.m
+platform/darwin/src/NSValue+MGLAdditions.m
+
+# SDK/Foundation/Formatters
+platform/darwin/src/MGLClockDirectionFormatter.m
+platform/darwin/src/MGLCompassDirectionFormatter.m
+platform/darwin/src/MGLCoordinateFormatter.m
+platform/darwin/src/MGLDistanceFormatter.m
+
+# SDK/Foundation/Geometry
+platform/darwin/src/MGLFeature.mm
+platform/darwin/src/MGLGeometry.mm
+platform/darwin/src/MGLMultiPoint.mm
+platform/darwin/src/MGLPointAnnotation.mm
+platform/darwin/src/MGLPointCollection.mm
+platform/darwin/src/MGLPolygon.mm
+platform/darwin/src/MGLPolyline.mm
+platform/darwin/src/MGLShape.mm
+platform/darwin/src/MGLShapeCollection.mm
+
+# SDK/Foundation/Offline Maps
+platform/darwin/src/MGLOfflinePack.mm
+platform/darwin/src/MGLOfflineStorage.mm
+platform/darwin/src/MGLShapeOfflineRegion.mm
+platform/darwin/src/MGLTilePyramidOfflineRegion.mm
+
+# SDK/Foundation/Styling
+platform/darwin/src/MGLLight.mm
+platform/darwin/src/MGLStyleValue.mm
+
+# SDK/Foundation/Styling/Categories
+platform/darwin/src/NSValue+MGLStyleAttributeAdditions.mm
+
+# SDK/Foundation/Styling/Layers
+platform/darwin/src/MGLBackgroundStyleLayer.mm
+platform/darwin/src/MGLCircleStyleLayer.mm
+platform/darwin/src/MGLFillExtrusionStyleLayer.mm
+platform/darwin/src/MGLFillStyleLayer.mm
+platform/darwin/src/MGLForegroundStyleLayer.mm
+platform/darwin/src/MGLHeatmapStyleLayer.mm
+platform/darwin/src/MGLHillshadeStyleLayer.mm
+platform/darwin/src/MGLLineStyleLayer.mm
+platform/darwin/src/MGLOpenGLStyleLayer.mm
+platform/darwin/src/MGLRasterStyleLayer.mm
+platform/darwin/src/MGLStyleLayer.mm
+platform/darwin/src/MGLSymbolStyleLayer.mm
+platform/darwin/src/MGLVectorStyleLayer.m
+
+# SDK/Foundation/Styling/Sources
+platform/darwin/src/MGLComputedShapeSource.mm
+platform/darwin/src/MGLImageSource.mm
+platform/darwin/src/MGLRasterDEMSource.mm
+platform/darwin/src/MGLRasterTileSource.mm
+platform/darwin/src/MGLShapeSource.mm
+platform/darwin/src/MGLSource.mm
+platform/darwin/src/MGLTileSource.mm
+platform/darwin/src/MGLVectorTileSource.mm
+
+# SDK/Kit
+platform/macos/src/MGLAnnotationImage.m
+platform/macos/src/MGLAttributionButton.mm
+platform/macos/src/MGLCompassCell.m
+platform/macos/src/MGLMapView+IBAdditions.mm
+platform/macos/src/MGLMapView.mm
+platform/macos/src/MGLOpenGLLayer.mm
+
+# SDK/Kit/Categories
+platform/macos/src/NSColor+MGLAdditions.mm
+platform/macos/src/NSImage+MGLAdditions.mm
+
