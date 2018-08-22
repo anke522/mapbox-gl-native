@@ -212,6 +212,27 @@ struct BindRenderbuffer {
     static Type Get();
 };
 
+struct CullFace {
+    using Type = gl::CullFace;
+    static const constexpr Type Default = gl::CullFace::Disable;
+    static void Set(const Type&);
+    static Type Get();
+};
+
+struct CullFaceMode {
+    using Type = gl::CullFaceMode;
+    static const constexpr Type Default = gl::CullFaceMode::Back;
+    static void Set(const Type&);
+    static Type Get();
+};
+
+struct FrontFace {
+    using Type = gl::FrontFace;
+    static const constexpr Type Default = gl::FrontFace::CounterClockwise;
+    static void Set(const Type&);
+    static Type Get();
+};
+
 struct BindTexture {
     using Type = gl::TextureID;
     static const constexpr Type Default = 0;

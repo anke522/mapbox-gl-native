@@ -119,5 +119,21 @@ enum class BufferUsage : uint32_t {
     DynamicDraw = 0x88E8,
 };
 
+enum class CullFace : bool {
+    Disable = false,
+    Enable = true,
+};
+
+enum class CullFaceMode : uint32_t {
+    Front = 0x0404,
+    Back = 0x0405,
+    FrontAndBack = 0x0408,
+};
+
+enum class FrontFace : uint32_t {
+    Clockwise = 0x0900,
+    CounterClockwise = 0x0901
+};
+
 } // namespace gl
 } // namespace mbgl

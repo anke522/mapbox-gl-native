@@ -617,6 +617,9 @@ void Context::setDirtyState() {
     clearDepth.setDirty();
     clearColor.setDirty();
     clearStencil.setDirty();
+    cullFace.setDirty();
+    cullFaceMode.setDirty();
+    frontFace.setDirty();
     program.setDirty();
     lineWidth.setDirty();
     activeTextureUnit.setDirty();
@@ -730,6 +733,12 @@ void Context::setColorMode(const ColorMode& color) {
     }
 
     colorMask = color.mask;
+}
+
+void Context::setCullFace(const CullFace& cullFaceValue, const CullFaceMode& cullFaceModeValue, const FrontFace& frontFaceValue) {
+    cullFace = cullFaceValue;
+    cullFaceMode = cullFaceModeValue;
+    frontFace = frontFaceValue;
 }
 
 void Context::draw(PrimitiveType primitiveType,

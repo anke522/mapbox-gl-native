@@ -441,6 +441,8 @@ void Renderer::Impl::render(const UpdateParameters& updateParameters) {
     // Renders any 3D layers bottom-to-top to unique FBOs with texture attachments, but share the same
     // depth rbo between them.
     if (parameters.staticData.has3D) {
+        using namespace gl::value;
+
         parameters.staticData.backendSize = parameters.backend.getFramebufferSize();
 
         MBGL_DEBUG_GROUP(parameters.context, "3d");
@@ -452,6 +454,9 @@ void Renderer::Impl::render(const UpdateParameters& updateParameters) {
                 parameters.context.createRenderbuffer<gl::RenderbufferType::DepthComponent>(parameters.staticData.backendSize);
         }
         parameters.staticData.depthRenderbuffer->shouldClear(true);
+
+        // Disable cull facing when rendering on a separate buffer.
+        parameters.context.setCullFace(gl::CullFace::Disable, CullFaceMode::Default, FrontFace::Default);
 
         uint32_t i = static_cast<uint32_t>(order.size()) - 1;
         for (auto it = order.begin(); it != order.end(); ++it, --i) {
@@ -478,6 +483,16 @@ void Renderer::Impl::render(const UpdateParameters& updateParameters) {
         } else {
             parameters.context.clear(backgroundColor, ClearDepth::Default, ClearStencil::Default);
         }
+    }
+
+    // - FACE CULLING
+    // ---------------------------------------------------------------------------------------------
+    // Specifies that only front-facing triangles are needed.
+    {
+        using namespace gl::value;
+
+        MBGL_DEBUG_GROUP(parameters.context, "Face culling");
+        parameters.context.setCullFace(gl::CullFace::Enable, CullFaceMode::Default, FrontFace::Default);
     }
 
     // - CLIPPING MASKS ----------------------------------------------------------------------------
