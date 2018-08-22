@@ -151,7 +151,13 @@ void SymbolBucket::updateOpacity() {
 void addPlacedSymbol(gl::IndexVector<gl::Triangles>& triangles, const PlacedSymbol& placedSymbol) {
     auto endIndex = placedSymbol.vertexStartIndex + placedSymbol.glyphOffsets.size() * 4;
     for (auto vertexIndex = placedSymbol.vertexStartIndex; vertexIndex < endIndex; vertexIndex += 4) {
-        triangles.emplace_back(vertexIndex + 0, vertexIndex + 1, vertexIndex + 2);
+        // add the two triangles, referencing the four coordinates we just inserted.
+        // ┌──────┐
+        // │ 0  1 │ Counter-clockwise winding order: front-facing culling.
+        // │      │ Triangle 1: 0 => 2 => 1
+        // │ 2  3 │ Triangle 2: 1 => 2 => 3
+        // └──────┘
+        triangles.emplace_back(vertexIndex, vertexIndex + 2, vertexIndex + 1);
         triangles.emplace_back(vertexIndex + 1, vertexIndex + 2, vertexIndex + 3);
     }
 }

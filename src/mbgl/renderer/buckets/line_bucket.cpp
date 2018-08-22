@@ -405,7 +405,8 @@ void LineBucket::addCurrentVertex(const GeometryCoordinate& currentCoordinate,
     vertices.emplace_back(LineProgram::layoutVertex(currentCoordinate, extrude, round, false, endLeft, distance * LINE_DISTANCE_SCALE));
     e3 = vertices.vertexSize() - 1 - startVertex;
     if (e1 >= 0 && e2 >= 0) {
-        triangleStore.emplace_back(e1, e2, e3);
+        // Counter-clockwise winding order: front-facing culling.
+        triangleStore.emplace_back(e1, e3, e2);
     }
     e1 = e2;
     e2 = e3;
@@ -416,6 +417,7 @@ void LineBucket::addCurrentVertex(const GeometryCoordinate& currentCoordinate,
     vertices.emplace_back(LineProgram::layoutVertex(currentCoordinate, extrude, round, true, -endRight, distance * LINE_DISTANCE_SCALE));
     e3 = vertices.vertexSize() - 1 - startVertex;
     if (e1 >= 0 && e2 >= 0) {
+        // Counter-clockwise winding order: front-facing culling.
         triangleStore.emplace_back(e1, e2, e3);
     }
     e1 = e2;
@@ -441,7 +443,8 @@ void LineBucket::addPieSliceVertex(const GeometryCoordinate& currentVertex,
     vertices.emplace_back(LineProgram::layoutVertex(currentVertex, flippedExtrude, false, lineTurnsLeft, 0, distance * LINE_DISTANCE_SCALE));
     e3 = vertices.vertexSize() - 1 - startVertex;
     if (e1 >= 0 && e2 >= 0) {
-        triangleStore.emplace_back(e1, e2, e3);
+        // Counter-clockwise winding order: front-facing culling.
+        triangleStore.emplace_back(e1, e3, e2);
     }
 
     if (lineTurnsLeft) {

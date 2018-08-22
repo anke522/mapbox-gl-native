@@ -31,7 +31,7 @@ public:
     // Bucket specific vertices are used for Image Sources only
     // Raster Tile Sources use the default buffers from Painter
     gl::VertexVector<RasterLayoutVertex> vertices;
-    gl::IndexVector<gl::Triangles> indices;
+    gl::IndexVector<gl::Triangles> triangles;
     SegmentVector<RasterAttributes> segments;
 
     optional<gl::VertexBuffer<RasterLayoutVertex>> vertexBuffer;

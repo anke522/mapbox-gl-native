@@ -207,8 +207,13 @@ void RenderImageSource::update(Immutable<style::Source::Impl> baseImpl_,
     bucket->vertices.emplace_back(
         RasterProgram::layoutVertex({ geomCoords[2].x, geomCoords[2].y }, { util::EXTENT, util::EXTENT }));
 
-    bucket->indices.emplace_back(0, 1, 2);
-    bucket->indices.emplace_back(1, 2, 3);
+    // ┌──────┐
+    // │ 0  1 │ Counter-clockwise winding order: front-facing culling.
+    // │      │ Triangle 1: 0 => 2 => 1
+    // │ 2  3 │ Triangle 2: 1 => 2 => 3
+    // └──────┘
+    bucket->triangles.emplace_back(0, 2, 1);
+    bucket->triangles.emplace_back(1, 2, 3);
 
     bucket->segments.emplace_back(0, 0, 4, 6);
 }

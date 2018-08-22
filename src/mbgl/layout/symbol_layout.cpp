@@ -519,7 +519,12 @@ size_t SymbolLayout::addSymbol(Buffer& buffer,
     buffer.opacityVertices.emplace_back(opacityVertex);
 
     // add the two triangles, referencing the four coordinates we just inserted.
-    buffer.triangles.emplace_back(index + 0, index + 1, index + 2);
+    // ┌──────┐
+    // │ 0  1 │ Counter-clockwise winding order: front-facing culling.
+    // │      │ Triangle 1: 0 => 2 => 1
+    // │ 2  3 │ Triangle 2: 1 => 2 => 3
+    // └──────┘
+    buffer.triangles.emplace_back(index, index + 2, index + 1);
     buffer.triangles.emplace_back(index + 1, index + 2, index + 3);
 
     segment.vertexLength += vertexLength;
@@ -560,10 +565,15 @@ void SymbolLayout::addToDebugBuffers(SymbolBucket& bucket) {
                 auto& segment = collisionBuffer.segments.back();
                 uint16_t index = segment.vertexLength;
 
-                collisionBuffer.vertices.emplace_back(CollisionBoxProgram::vertex(anchor, symbolInstance.anchor.point, tl));
-                collisionBuffer.vertices.emplace_back(CollisionBoxProgram::vertex(anchor, symbolInstance.anchor.point, tr));
-                collisionBuffer.vertices.emplace_back(CollisionBoxProgram::vertex(anchor, symbolInstance.anchor.point, br));
-                collisionBuffer.vertices.emplace_back(CollisionBoxProgram::vertex(anchor, symbolInstance.anchor.point, bl));
+                // ┌──────┐
+                // │ 0  1 │ Counter-clockwise winding order: front-facing culling.
+                // │      │ Triangle 1: 0 => 2 => 1
+                // │ 2  3 │ Triangle 2: 1 => 2 => 3
+                // └──────┘
+                collisionBuffer.vertices.emplace_back(CollisionBoxProgram::vertex(anchor, symbolInstance.anchor.point, tl)); // 0
+                collisionBuffer.vertices.emplace_back(CollisionBoxProgram::vertex(anchor, symbolInstance.anchor.point, tr)); // 1
+                collisionBuffer.vertices.emplace_back(CollisionBoxProgram::vertex(anchor, symbolInstance.anchor.point, bl)); // 2
+                collisionBuffer.vertices.emplace_back(CollisionBoxProgram::vertex(anchor, symbolInstance.anchor.point, br)); // 3
 
                 // Dynamic vertices are initialized so that the vertex count always agrees with
                 // the layout vertex buffer, but they will always be updated before rendering happens
@@ -574,13 +584,14 @@ void SymbolLayout::addToDebugBuffers(SymbolBucket& bucket) {
                 collisionBuffer.dynamicVertices.emplace_back(dynamicVertex);
 
                 if (feature.alongLine) {
-                    bucket.collisionCircle.triangles.emplace_back(index, index + 1, index + 2);
-                    bucket.collisionCircle.triangles.emplace_back(index, index + 2, index + 3);
+                    // Counter-clockwise winding order: front-facing culling.
+                    bucket.collisionCircle.triangles.emplace_back(index, index + 2, index + 1);
+                    bucket.collisionCircle.triangles.emplace_back(index + 1, index + 2, index + 3);
                 } else {
-                    bucket.collisionBox.lines.emplace_back(index + 0, index + 1);
-                    bucket.collisionBox.lines.emplace_back(index + 1, index + 2);
-                    bucket.collisionBox.lines.emplace_back(index + 2, index + 3);
-                    bucket.collisionBox.lines.emplace_back(index + 3, index + 0);
+                    bucket.collisionBox.lines.emplace_back(index, index + 1);
+                    bucket.collisionBox.lines.emplace_back(index + 1, index + 3);
+                    bucket.collisionBox.lines.emplace_back(index + 3, index + 2);
+                    bucket.collisionBox.lines.emplace_back(index + 2, index);
                 }
 
                 segment.vertexLength += vertexLength;

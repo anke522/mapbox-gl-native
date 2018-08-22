@@ -95,9 +95,10 @@ void FillBucket::addFeature(const GeometryTileFeature& feature,
         uint16_t triangleIndex = triangleSegment.vertexLength;
 
         for (uint32_t i = 0; i < nIndicies; i += 3) {
+            // Counter-clockwise winding order: front-facing culling.
             triangles.emplace_back(triangleIndex + indices[i],
-                                   triangleIndex + indices[i + 1],
-                                   triangleIndex + indices[i + 2]);
+                                   triangleIndex + indices[i + 2],
+                                   triangleIndex + indices[i + 1]);
         }
 
         triangleSegment.vertexLength += totalVertices;

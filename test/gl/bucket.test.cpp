@@ -159,7 +159,7 @@ TEST(Buckets, RasterBucketMaskEmpty) {
     RasterBucket bucket{ nullptr };
     bucket.setMask({});
     EXPECT_EQ((std::vector<RasterLayoutVertex>{}), bucket.vertices.vector());
-    EXPECT_EQ((std::vector<uint16_t>{}), bucket.indices.vector());
+    EXPECT_EQ((std::vector<uint16_t>{}), bucket.triangles.vector());
     SegmentVector<RasterAttributes> expectedSegments;
     expectedSegments.emplace_back(0, 0, 0, 0);
     EXPECT_EQ(expectedSegments, bucket.segments);
@@ -171,7 +171,7 @@ TEST(Buckets, RasterBucketMaskNoChildren) {
 
     // A mask of 0/0/0 doesn't produce buffers since we're instead using the global shared buffers.
     EXPECT_EQ((std::vector<RasterLayoutVertex>{}), bucket.vertices.vector());
-    EXPECT_EQ((std::vector<uint16_t>{}), bucket.indices.vector());
+    EXPECT_EQ((std::vector<uint16_t>{}), bucket.triangles.vector());
     EXPECT_EQ((SegmentVector<RasterAttributes>{}), bucket.segments);
 }
 
@@ -199,14 +199,14 @@ TEST(Buckets, RasterBucketMaskNoChildren) {
      EXPECT_EQ(
          (std::vector<uint16_t>{
              // 1/0/1
-             0, 1, 2,
+             0, 2, 1,
              1, 2, 3,
 
              // 1/1/1
-             4, 5, 6,
+             4, 6, 5,
              5, 6, 7,
          }),
-         bucket.indices.vector());
+         bucket.triangles.vector());
 
 
      SegmentVector<RasterAttributes> expectedSegments;
@@ -263,30 +263,30 @@ TEST(Buckets, RasterBucketMaskNoChildren) {
      EXPECT_EQ(
          (std::vector<uint16_t>{
              // 1/0/1
-             0, 1, 2,
+             0, 2, 1,
              1, 2, 3,
 
              // 1/1/0
-             4, 5, 6,
+             4, 6, 5,
              5, 6, 7,
 
              // 2/2/3
-             8, 9, 10,
+             8, 10, 9,
              9, 10, 11,
 
              // 2/3/2
-             12, 13, 14,
+             12, 14, 13,
              13, 14, 15,
 
              // 3/6/7
-             16, 17, 18,
+             16, 18, 17,
              17, 18, 19,
 
              // 3/7/6
-             20, 21, 22,
+             20, 22, 21,
              21, 22, 23,
          }),
-         bucket.indices.vector());
+         bucket.triangles.vector());
 
 
      SegmentVector<RasterAttributes> expectedSegments;

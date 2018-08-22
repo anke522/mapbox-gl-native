@@ -58,28 +58,24 @@ void HeatmapBucket::addFeature(const GeometryTileFeature& feature,
                 segments.emplace_back(vertices.vertexSize(), triangles.indexSize());
             }
 
-            // this geometry will be of the Point type, and we'll derive
-            // two triangles from it.
-            //
-            // ┌─────────┐
-            // │ 4     3 │
-            // │         │
-            // │ 1     2 │
-            // └─────────┘
-            //
-            vertices.emplace_back(HeatmapProgram::vertex(point, -1, -1)); // 1
-            vertices.emplace_back(HeatmapProgram::vertex(point,  1, -1)); // 2
-            vertices.emplace_back(HeatmapProgram::vertex(point,  1,  1)); // 3
-            vertices.emplace_back(HeatmapProgram::vertex(point, -1,  1)); // 4
-
             auto& segment = segments.back();
             assert(segment.vertexLength <= std::numeric_limits<uint16_t>::max());
             uint16_t index = segment.vertexLength;
 
-            // 1, 2, 3
-            // 1, 4, 3
-            triangles.emplace_back(index, index + 1, index + 2);
-            triangles.emplace_back(index, index + 3, index + 2);
+            // this geometry will be of the Point type, and we'll derive
+            // two triangles from it.
+            // ┌──────┐
+            // │ 0  1 │ Counter-clockwise winding order: front-facing culling.
+            // │      │ Triangle 1: 0 => 2 => 1
+            // │ 2  3 │ Triangle 2: 1 => 2 => 3
+            // └──────┘
+            vertices.emplace_back(HeatmapProgram::vertex(point, -1, -1)); // 0
+            vertices.emplace_back(HeatmapProgram::vertex(point,  1, -1)); // 1
+            vertices.emplace_back(HeatmapProgram::vertex(point, -1,  1)); // 2
+            vertices.emplace_back(HeatmapProgram::vertex(point,  1,  1)); // 3
+
+            triangles.emplace_back(index, index + 2, index + 1);
+            triangles.emplace_back(index + 1, index + 2, index + 3);
 
             segment.vertexLength += vertexLength;
             segment.indexLength += 6;
