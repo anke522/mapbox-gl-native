@@ -36,7 +36,7 @@ public:
     }
 
     mapbox::geometry::feature_collection<double> getChildren(const std::uint32_t cluster_id) {
-        return impl.getChildren(cluster_id);
+        return impl.getChildren(cluster_id;
     }
 
     mapbox::geometry::feature_collection<double> getLeaves(const std::uint32_t cluster_id,
